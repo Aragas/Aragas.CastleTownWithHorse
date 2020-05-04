@@ -11,10 +11,9 @@ namespace Aragas.Core
     [HarmonyPatch("Deserialize")]
     public class ItemObjectPatch
     {
-        private static MethodInfo SetItemFlagsMethod { get; } =
-            typeof(ItemObject).GetProperty("ItemFlags").SetMethod;
+        private static MethodInfo SetItemFlagsMethod { get; } = typeof(ItemObject).GetProperty("ItemFlags").SetMethod;
 
-        public static void Postfix(ItemObject __instance, MBObjectManager objectManager, XmlNode node)
+        public static void Postfix(ItemObject __instance, XmlNode node)
         {
             switch (node.Name)
             {
