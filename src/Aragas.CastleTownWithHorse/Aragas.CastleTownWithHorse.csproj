@@ -36,4 +36,5 @@
       <IncludeAssets>compile</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
 </Project>
