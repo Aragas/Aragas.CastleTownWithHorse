@@ -24,7 +24,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@master
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.x.x
 
     - name: Setup BUTR GPR
       uses: actions/setup-dotnet@master
@@ -46,80 +46,6 @@ jobs:
         path: ./bannerlord/
 
 ###########################
-#          NEXUS          #
-###########################
-  publish-on-nexusmods:
-    name: Publish on NexusMods
-    needs: ["build-module"]
-    runs-on: ubuntu-latest
-    if: ${{false}}
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@master
-      with:
-        dotnet-version: 3.1.x
-
-    - name: Setup BUTR GPR
-      uses: actions/setup-dotnet@master
-      with:
-        source-url: https://nuget.pkg.github.com/BUTR/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-    - name: Download stable bannerlord folder
-      uses: actions/download-artifact@v2
-      with:
-        name: bannerlord
-        path: ./bannerlord
-
-    - name: Zip Aragas.CastleTownWithHorse
-      run: 7z a -tzip Aragas.CastleTownWithHorse.zip ./bannerlord/*
-      #shell: pwsh
-      # pwsh casues it to include the root folder
-
-    - name: Install Bannerlord.ChangelogParser and Bannerlord.NexusmodsUploader
-      run: >-
-        dotnet tool install -g Bannerlord.ChangelogParser;
-        dotnet tool install -g Bannerlord.NexusmodsUploader;
-      shell: pwsh
-
-    - name: Run ChangelogParser
-      id: changelog
-      run: |
-        vers="$(bannerlord_changelog_parser latestversion -f "$PWD/changelog.txt")"
-        echo "::set-output name=mod_version::$vers"
-        desc="$(bannerlord_changelog_parser fulldescription -f "$PWD/changelog.txt")"
-        desc="${desc//'%'/'%25'}"
-        desc="${desc//$'\n'/'%0A'}"
-        desc="${desc//$'\r'/'%0D'}"
-        echo "::set-output name=mod_description::$desc"
-
-    - name: Start Selenoid
-      uses: Xotabu4/selenoid-github-action@v1
-
-    - name: Run NexusmodsUploader
-      run: >-
-        bannerlord_nexusmods_uploader upload -g mountandblade2bannerlord -m 328 -n "Aragas.CastleTownWithHorse"
-        -v "v${{steps.changelog.outputs.mod_version}}" -l true -e true -d "${{steps.changelog.outputs.mod_description}}"
-        -p "$PWD/Aragas.CastleTownWithHorse.zip";
-      env:
-        NEXUSMODS_COOKIES_JSON: '${{secrets.NEXUSMODS_COOKIES_JSON}}'
-      shell: pwsh
-
-    - name: Password protect Screenshots
-      run: 7z a -p${{secrets.SCREENSHOTS_PASSWORD}} Screenshots.7z ./Screenshots/*
-      shell: pwsh
-
-    - name: Upload Screenshots Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Screenshots
-        path: Screenshots.7z
-
-###########################
 #         GITHUB          #
 ###########################
   publish-on-github:
@@ -133,7 +59,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@master
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 6.x.x
 
     - name: Setup BUTR GPR
       uses: actions/setup-dotnet@master
@@ -153,10 +79,9 @@ jobs:
       #shell: pwsh
       # pwsh casues it to include the root folder
 
-    - name: Install Bannerlord.ChangelogParser and Bannerlord.NexusmodsUploader
+    - name: Install Bannerlord.ChangelogParser
       run: >-
         dotnet tool install -g Bannerlord.ChangelogParser;
-        dotnet tool install -g Bannerlord.NexusmodsUploader;
       shell: pwsh
 
     - name: Run ChangelogParser
