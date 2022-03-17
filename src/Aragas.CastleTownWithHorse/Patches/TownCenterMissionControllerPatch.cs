@@ -1,8 +1,7 @@
 ﻿using HarmonyLib;
+using HarmonyLib.BUTR.Extensions;
 
-using SandBox;
-using SandBox.Source.Missions;
-
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -13,10 +12,18 @@ namespace Aragas.CastleTownWithHorse.Patches
 {
     public static class TownCenterMissionControllerPatch
     {
+        private static readonly Type? TownCenterMissionControllerType =
+            AccessTools2.TypeByName("SandBox.Source.Missions.TownCenterMissionController") ??
+            AccessTools2.TypeByName("SandBox.Missions.MissionLogics.Towns.TownCenterMissionController");
+
+        private static readonly Type? MissionAgentHandlerType =
+            AccessTools2.TypeByName("SandBox.MissionAgentHandler") ??
+            AccessTools2.TypeByName("SandBox.Missions.MissionLogics.MissionAgentHandler");
+
         public static void Patch(Harmony harmony)
         {
             harmony.Patch(
-                AccessTools.Method(typeof(TownCenterMissionController), "AfterStart"),
+                AccessTools.Method(TownCenterMissionControllerType, "AfterStart"),
                 transpiler: new HarmonyMethod(AccessTools.Method(typeof(TownCenterMissionControllerPatch), nameof(Transpiler))));
         }
 
@@ -30,7 +37,7 @@ namespace Aragas.CastleTownWithHorse.Patches
                 return instructionsList.AsEnumerable();
             }
 
-            var spawnPlayerMethod = AccessTools.Method(typeof(MissionAgentHandler), "SpawnPlayer");
+            var spawnPlayerMethod = AccessTools.Method(MissionAgentHandlerType, "SpawnPlayer");
             if (spawnPlayerMethod is null)
                 return ReturnDefault("Missing method SpawnPlayer in MissionAgentHandler");
 
