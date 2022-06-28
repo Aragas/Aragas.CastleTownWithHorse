@@ -6,25 +6,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 
-using TaleWorlds.Library;
-
 namespace Aragas.CastleTownWithHorse.Patches
 {
     public static class TownCenterMissionControllerPatch
     {
-        private static readonly Type? TownCenterMissionControllerType =
-            AccessTools2.TypeByName("SandBox.Source.Missions.TownCenterMissionController") ??
-            AccessTools2.TypeByName("SandBox.Missions.MissionLogics.Towns.TownCenterMissionController");
-
-        private static readonly Type? MissionAgentHandlerType =
-            AccessTools2.TypeByName("SandBox.MissionAgentHandler") ??
-            AccessTools2.TypeByName("SandBox.Missions.MissionLogics.MissionAgentHandler");
-
         public static void Patch(Harmony harmony)
         {
             harmony.Patch(
-                AccessTools.Method(TownCenterMissionControllerType, "AfterStart"),
-                transpiler: new HarmonyMethod(AccessTools.Method(typeof(TownCenterMissionControllerPatch), nameof(Transpiler))));
+                AccessTools2.Method("SandBox.Source.Missions.TownCenterMissionController:AfterStart") ??
+                AccessTools2.Method("SandBox.Missions.MissionLogics.Towns.TownCenterMissionController:AfterStart"),
+                transpiler: new HarmonyMethod(typeof(TownCenterMissionControllerPatch), nameof(Transpiler)));
         }
 
         // set noHorses to false
@@ -37,12 +28,14 @@ namespace Aragas.CastleTownWithHorse.Patches
                 return instructionsList.AsEnumerable();
             }
 
-            var spawnPlayerMethod = AccessTools.Method(MissionAgentHandlerType, "SpawnPlayer");
+            var spawnPlayerMethod = AccessTools2.Method("SandBox.MissionAgentHandler:SpawnPlayer") ??
+                                    AccessTools2.Method("SandBox.Missions.MissionLogics.MissionAgentHandler:SpawnPlayer");
             if (spawnPlayerMethod is null)
                 return ReturnDefault("Missing method SpawnPlayer in MissionAgentHandler");
 
             var spawnPlayerParameters = spawnPlayerMethod.GetParameters();
-            var noHorseParamIndex = spawnPlayerParameters.FindIndex(p => p.Name == "noHorses");
+            var noHorseParam = spawnPlayerParameters.FirstOrDefault(p => p.Name == "noHorses");
+            var noHorseParamIndex = Array.IndexOf(spawnPlayerParameters, noHorseParam);
 
             if (noHorseParamIndex == -1)
                 return ReturnDefault("Missing parameter 'noHorse' in method SpawnPlayer");

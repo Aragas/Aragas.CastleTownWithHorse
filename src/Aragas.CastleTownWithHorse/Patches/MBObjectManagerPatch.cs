@@ -10,15 +10,14 @@ namespace Aragas.CastleTownWithHorse.Patches
     public static class ItemObjectPatch
     {
         private delegate void SetItemFlagsDelegate(object instance, ItemFlags itemFlags);
-
         private static readonly SetItemFlagsDelegate? SetItemFlags =
-            AccessTools2.GetDelegateObjectInstance<SetItemFlagsDelegate>(AccessTools.PropertySetter(typeof(ItemObject), "ItemFlags"));
+            AccessTools2.GetPropertySetterDelegate<SetItemFlagsDelegate>("TaleWorlds.Core.ItemObject:ItemFlags");
 
         public static void Patch(Harmony harmony)
         {
             harmony.Patch(
-                AccessTools.DeclaredMethod(typeof(ItemObject), "Deserialize"),
-                postfix: new HarmonyMethod(AccessTools.Method(typeof(ItemObjectPatch), nameof(Postfix))));
+                AccessTools2.Method("TaleWorlds.Core.ItemObject:Deserialize"),
+                postfix: new HarmonyMethod(typeof(ItemObjectPatch), nameof(Postfix)));
         }
 
         private static void Postfix(ItemObject __instance, XmlNode node)
@@ -28,8 +27,7 @@ namespace Aragas.CastleTownWithHorse.Patches
                 case "Item":
                     if (__instance.Type == ItemObject.ItemTypeEnum.HorseHarness && __instance.HasArmorComponent)
                     {
-                        if (__instance.ArmorComponent.MaterialType == ArmorComponent.ArmorMaterialTypes.Cloth ||
-                            __instance.ArmorComponent.MaterialType == ArmorComponent.ArmorMaterialTypes.Leather)
+                        if (__instance.ArmorComponent.MaterialType is ArmorComponent.ArmorMaterialTypes.Cloth or ArmorComponent.ArmorMaterialTypes.Leather)
                             SetCivilian(__instance);
                     }
                     break;
