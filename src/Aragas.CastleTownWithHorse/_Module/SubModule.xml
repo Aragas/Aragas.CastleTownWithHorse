@@ -4,22 +4,21 @@
   <Id value="$moduleid$" />
   <Name value="$modulename$" />
   <Version value="v$version$" />
-  <Official value="false" />
   <DefaultModule value="false" />
-  <SingleplayerModule value="true" />
-  <MultiplayerModule value="false" />
   <ModuleCategory value="Singleplayer" />
+  <ModuleType value="Community" />
+  <Url value="https://www.nexusmods.com/mountandblade2bannerlord/mods/328" />
   <DependedModules>
     <DependedModule Id="Bannerlord.Harmony" DependentVersion="v$harmonyversion$" />
-    <DependedModule Id="Native" DependentVersion="e$gameversion$.*" />
-    <DependedModule Id="Sandbox" DependentVersion="e$gameversion$.*" />
+    <DependedModule Id="Native" DependentVersion="v$gameversion$.*" />
+    <DependedModule Id="Sandbox" DependentVersion="v$gameversion$.*" />
   </DependedModules>
   <!-- Community Dependency Metadata -->
   <!-- https://github.com/BUTR/Bannerlord.BUTRLoader#for-modders -->
   <DependedModuleMetadatas>
     <DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" version="v$harmonyversion$" />
-    <DependedModuleMetadata id="Native" order="LoadBeforeThis" version="e$gameversion$.*" />
-    <DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" version="e$gameversion$.*" />
+    <DependedModuleMetadata id="Native" order="LoadBeforeThis" version="v$gameversion$.*" />
+    <DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" version="v$gameversion$.*" />
   </DependedModuleMetadatas>
   <!-- Community Dependency Metadata -->
   <SubModules>

@@ -1,13 +1,13 @@
 ﻿using Aragas.CastleTownWithHorse.Patches;
 
-using HarmonyLib;   
+using HarmonyLib;
 
 using TaleWorlds.MountAndBlade;
 
 namespace Aragas.CastleTownWithHorse
 {
     public class SubModule : MBSubModuleBase
-	{
+    {
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();

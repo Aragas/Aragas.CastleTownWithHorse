@@ -9,14 +9,14 @@ namespace Aragas.CastleTownWithHorse.Patches
 {
     public static class ItemObjectPatch
     {
-        private delegate void SetItemFlagsDelegate(object instance, ItemFlags itemFlags);
+        private delegate void SetItemFlagsDelegate(ItemObject instance, ItemFlags itemFlags);
         private static readonly SetItemFlagsDelegate? SetItemFlags =
-            AccessTools2.GetPropertySetterDelegate<SetItemFlagsDelegate>("TaleWorlds.Core.ItemObject:ItemFlags");
+            AccessTools2.GetPropertySetterDelegate<SetItemFlagsDelegate>(typeof(ItemObject), "ItemFlags");
 
         public static void Patch(Harmony harmony)
         {
             harmony.Patch(
-                AccessTools2.Method("TaleWorlds.Core.ItemObject:Deserialize"),
+                AccessTools2.Method(typeof(ItemObject), "Deserialize"),
                 postfix: new HarmonyMethod(typeof(ItemObjectPatch), nameof(Postfix)));
         }
 
