@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 
-using SandBox;
-using SandBox.Source.Missions;
+using SandBox.Missions.MissionLogics;
+using SandBox.Missions.MissionLogics.Towns;
 
 namespace Aragas.CastleTownWithHorse.Patches
 {
